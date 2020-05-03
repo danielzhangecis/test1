@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring       http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+        <route id="simple-route">
+            <from id="route-timer" uri="timer://OneMsgPer5Sec?period=5000"/>
+            <setBody id="route-setBody">
+                <simple>&lt;a&gt; &lt;b&gt;&lt;c&gt;1&lt;/c&gt;&lt;/b&gt;&lt;b&gt;&lt;c&gt;2&lt;/c&gt;&lt;/b&gt;&lt;b&gt;&lt;c&gt;3&lt;/c&gt;&lt;/b&gt;&lt;times10&gt;true&lt;/times10&gt;&lt;/a&gt;</simple>
+            </setBody>
+            <bean beanType="org.mycompany.JavaCallOut" id="_bean2" method="sayHello"/>
+            <setHeader headerName="MagicNumber" id="_setHeader1">
+                <method beanType="org.mycompany.JavaCallOut" method="rand1or2or3"/>
+            </setHeader>
+            <setHeader headerName="AugParts" id="_setHeader2">
+                <simple>ExtraInfo</simple>
+            </setHeader>
+            <log id="route-log-a" message=">>> ${header.MagicNumber}"/>
+            <to id="_to1" uri="xquery://file:/xqy/test1.txt"/>
+            <bean beanType="org.mycompany.JavaCallOut" id="_bean1" method="sayGoodbye"/>
+        </route>
+    </camelContext>
+</beans>
